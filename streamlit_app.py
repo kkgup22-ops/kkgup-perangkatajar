@@ -1,62 +1,53 @@
 import streamlit as st
 
 # --- KONFIGURASI HALAMAN ---
-st.set_page_config(page_title="Admin Guru SD Lengkap", page_icon="🏫", layout="wide")
+st.set_page_config(page_title="Penyusun Modul SD Pro", page_icon="🏫", layout="wide")
 
 # --- DATABASE MATERI LENGKAP ---
 DATABASE_MATERI = {
+    "Bahasa Indonesia": {
+        "A (Kelas 1-2)": ["Membaca Huruf & Suku Kata", "Teks Deskripsi Benda", "Puisi Anak"],
+        "B (Kelas 3-4)": ["Sehatlah Ragaku (Kesehatan Tubuh)", "Ide Pokok & Pendukung", "Membedakan Fakta & Opini", "Menulis Teks Narasi"],
+        "C (Kelas 5-6)": ["Teks Eksplanasi", "Pidato & Presentasi", "Surat Resmi"]
+    },
     "Pendidikan Agama Islam": {
-        "A (Kelas 1-2)": ["Huruf Hijaiyah", "Rukun Islam & Iman", "Adab Makan & Minum", "Kisah Nabi Adam as."],
-        "B (Kelas 3-4)": ["Asmaul Husna", "Shalat Fardhu", "Kisah Nabi Muhammad saw.", "Mari Mengaji Surah Pendek"],
-        "C (Kelas 5-6)": ["Hari Akhir", "Zakat & Haji", "Kisah Sahabat Nabi", "Etika Berteman (Ukhuwah)"]
+        "A (Kelas 1-2)": ["Huruf Hijaiyah", "Rukun Islam & Iman", "Adab Makan & Minum"],
+        "B (Kelas 3-4)": ["Asmaul Husna", "Shalat Fardhu", "Kisah Nabi Muhammad saw."],
+        "C (Kelas 5-6)": ["Hari Akhir", "Zakat & Haji", "Etika Berteman"]
     },
     "Pendidikan Pancasila": {
-        "A (Kelas 1-2)": ["Simbol Pancasila", "Aturan di Rumah & Sekolah", "Identitas Diri", "Gotong Royong"],
-        "B (Kelas 3-4)": ["Makna Sila Pancasila", "Hak & Kewajiban", "Keberagaman Budaya", "Musyawarah"],
-        "C (Kelas 5-6)": ["Penerapan Pancasila", "Norma & Hukum", "Kedaulatan Rakyat", "Cinta Tanah Air"]
+        "A (Kelas 1-2)": ["Simbol Pancasila", "Aturan di Rumah", "Gotong Royong"],
+        "B (Kelas 3-4)": ["Makna Sila Pancasila", "Hak & Kewajiban", "Keberagaman Budaya"],
+        "C (Kelas 5-6)": ["Penerapan Pancasila", "Norma & Hukum", "Cinta Tanah Air"]
     },
     "Bahasa Inggris": {
-        "A (Kelas 1-2)": ["Greetings & Farewell", "Numbers 1-10", "My Family", "Colors & Shapes"],
-        "B (Kelas 3-4)": ["Parts of Body", "My House", "Daily Activities", "Animal Names"],
-        "C (Kelas 5-6)": ["Direction & Location", "Health & Illness", "Future Dreams", "Simple Past Experiences"]
+        "A (Kelas 1-2)": ["Greetings", "Numbers 1-10", "Colors"],
+        "B (Kelas 3-4)": ["Parts of Body", "My House", "Daily Activities"],
+        "C (Kelas 5-6)": ["Direction", "Future Dreams", "Simple Past"]
     },
     "Seni Budaya": {
-        "A (Kelas 1-2)": ["Garis & Warna", "Bunyi Musik Sederhana", "Gerak Tari Hewan", "Membuat Kolase"],
-        "B (Kelas 3-4)": ["Menggambar Perspektif", "Alat Musik Ritmis", "Tari Tradisional Daerah", "Membuat Anyaman"],
-        "C (Kelas 5-6)": ["Seni Rupa Terapan", "Ansambel Musik", "Koreografi Tari Modern", "Pameran Karya Seni"]
+        "A (Kelas 1-2)": ["Garis & Warna", "Gerak Tari Hewan", "Kolase"],
+        "B (Kelas 3-4)": ["Menggambar Perspektif", "Tari Tradisional", "Membuat Anyaman"],
+        "C (Kelas 5-6)": ["Seni Rupa Terapan", "Ansambel Musik", "Koreografi Tari"]
     },
     "PJOK": {
-        "A (Kelas 1-2)": ["Gerak Lokomotor", "Senam Irama", "Kebersihan Tubuh", "Permainan Bola Kecil"],
-        "B (Kelas 3-4)": ["Kombinasi Gerak Dasar", "Atletik Dasar", "Renang Gaya Dada", "Bahaya Merokok"],
-        "C (Kelas 5-6)": ["Pencak Silat", "Kebugaran Jasmani", "Permainan Bola Besar", "Pencegahan Penyakit Menular"]
-    },
-    "IPAS": {
-        "B (Kelas 3-4)": ["Wujud Zat", "Bagian Tubuh Tumbuhan", "Energi & Perubahannya", "Peta Lingkungan"],
-        "C (Kelas 5-6)": ["Sistem Pencernaan", "Listrik & Magnet", "Warisan Budaya", "Bumi & Alam Semesta"]
-    },
-    "Matematika": {
-        "A (Kelas 1-2)": ["Bilangan Cacah", "Penjumlahan & Pengurangan", "Pola Gambar", "Jam & Waktu"],
-        "B (Kelas 3-4)": ["Perkalian & Pembagian", "Pecahan", "Luas & Keliling Bangun", "Diagram Batang"],
-        "C (Kelas 5-6)": ["Bilangan Bulat Negatif", "Lingkaran", "Bangun Ruang Campuran", "Rata-rata (Mean)"]
-    },
-    "Bahasa Indonesia": {
-        "A (Kelas 1-2)": ["Membaca Huruf", "Suku Kata", "Teks Deskripsi Benda", "Puisi Anak"],
-        "B (Kelas 3-4)": ["Mencari Ide Pokok", "Wawancara Tokoh", "Menulis Laporan", "Pantun Nasihat"],
-        "C (Kelas 5-6)": ["Surat Resmi", "Teks Prosedur", "Iklan & Poster", "Meringkas Buku"]
+        "A (Kelas 1-2)": ["Gerak Lokomotor", "Senam Irama", "Kebersihan Tubuh"],
+        "B (Kelas 3-4)": ["Kombinasi Gerak Dasar", "Renang Gaya Dada", "Atletik"],
+        "C (Kelas 5-6)": ["Pencak Silat", "Kebugaran Jasmani", "Permainan Bola Besar"]
     }
 }
 
 # --- UI APLIKASI ---
 st.title("🛡️ Generator Perangkat Pembelajaran SD Lengkap")
-st.write("Versi Offline - Tanpa API Key - Strategi 8 Dimensi Lulusan")
+st.write("Versi Offline - Tanpa API Key - Berbasis Deep Learning & 8 Profil Lulusan")
 
 # 1. Input Data Administrasi
 with st.container():
     st.info("### 📋 1. Identitas Administrasi")
     c1, c2, c3 = st.columns(3)
     with c1:
-        nama_guru = st.text_input("Nama Guru & Gelar")
-        nama_sekolah = st.text_input("Nama Sekolah")
+        nama_guru = st.text_input("Nama Guru & Gelar", placeholder="Contoh: Haidar, S.Pd.")
+        nama_sekolah = st.text_input("Nama Sekolah", placeholder="Contoh: SDN Merdeka")
         tahun_ajaran = st.text_input("Tahun Ajaran", "2025/2026")
     with c2:
         mapel = st.selectbox("Mata Pelajaran", list(DATABASE_MATERI.keys()))
@@ -68,58 +59,70 @@ with st.container():
 st.divider()
 
 # 2. Detail Materi
-st.info("### 💡 2. Pemilihan Materi & Strategi")
+st.info("### 💡 2. Materi & Strategi")
 options_materi = DATABASE_MATERI[mapel].get(fase, ["Materi Lainnya..."])
-topik_pilihan = st.selectbox("Pilih Materi Spesifik", options_materi)
+topik_pilihan = st.selectbox("Pilih Topik Pembelajaran", options_materi)
 
 if topik_pilihan == "Materi Lainnya...":
-    topik_pilihan = st.text_input("Ketik Topik Baru")
+    topik_pilihan = st.text_input("Ketik Topik Secara Manual")
 
 # --- PROSES GENERATE ---
 if st.button("🚀 Susun Modul Ajar Lengkap"):
     if not nama_guru or not topik_pilihan:
-        st.error("Lengkapi data administrasi dan materi!")
+        st.error("Lengkapi Nama Guru dan Topik untuk melanjutkan!")
     else:
-        # Template Aktivitas 8 Dimensi
-        modul_teks = f"""
-============================================================
-MODUL AJAR KURIKULUM MERDEKA - DEEP LEARNING
-============================================================
-
-I. IDENTITAS MODUL
+        # Template berdasarkan dokumen referensi user
+        modul_result = f"""
+MODUL AJAR KURIKULUM MERDEKA
 ------------------------------------------------------------
-Penyusun        : {nama_guru}
-Sekolah         : {nama_sekolah}
-Tahun Ajaran    : {tahun_ajaran}
-Fase / Kelas    : {fase} / {kelas}
-Mata Pelajaran  : {mapel}
-Topik / Materi  : {topik_pilihan}
-Semester        : {semester}
-
-II. KEGIATAN INTI (INTEGRASI 8 DIMENSI LULUSAN)
+I. INFORMASI UMUM
 ------------------------------------------------------------
-1. Character      : Pembiasaan berdoa dan menanamkan nilai integritas dalam {topik_pilihan}.
-2. Citizenship    : Menghubungkan {topik_pilihan} dengan tanggung jawab sosial di masyarakat.
-3. Collaboration  : Kerja tim dalam memecahkan studi kasus atau proyek terkait {topik_pilihan}.
-4. Communication  : Sesi presentasi kelompok dan berbagi umpan balik yang konstruktif.
-5. Creativity     : Mendesain karya orisinal (gambar/alat peraga) berdasarkan materi.
-6. Critical Thinking: Menganalisis alasan 'mengapa' konsep {topik_pilihan} penting dipelajari.
-7. Compassion     : Berbagi manfaat belajar {topik_pilihan} untuk membantu sesama teman.
-8. Comp. Thinking : Menyusun instruksi langkah-demi-langkah terkait penyelesaian materi.
+Penyusun       : {nama_guru}
+Instansi       : {nama_sekolah}
+Tahun Ajaran   : {tahun_ajaran}
+Mata Pelajaran : {mapel}
+Fase / Kelas   : {fase} / {kelas}
+Semester       : {semester}
+Bab / Tema     : {topik_pilihan}
 
-III. RUBRIK ASESMEN (PENILAIAN)
+II. 8 PROFIL LULUSAN (DEEP LEARNING)
 ------------------------------------------------------------
-- Sangat Baik : Menguasai konsep dan aktif di seluruh 8 dimensi.
-- Baik        : Menguasai konsep dan menunjukkan sebagian besar dimensi.
-- Cukup       : Memahami konsep dasar dengan bantuan bimbingan guru.
+1. Keimanan     : Memiliki keyakinan teguh akan keberadaan Tuhan.
+2. Kewargaan    : Cinta tanah air, taat aturan, dan tanggung jawab sosial.
+3. Penalaran    : Berpikir logis, analitis, dan reflektif.
+4. Kreativitas  : Berpikir inovatif, fleksibel, dan orisinal.
+5. Kolaborasi   : Bekerja sama secara efektif dan gotong royong.
+6. Kemandirian  : Bertanggung jawab atas proses dan hasil belajar.
+7. Kesehatan    : Memiliki fisik prima dan keseimbangan mental (well-being).
+8. Komunikasi   : Menyampaikan ide secara efektif (lisan & tulisan).
+
+III. KEGIATAN PEMBELAJARAN (DEEP LEARNING METHOD)
+------------------------------------------------------------
+- Mindful Learning   : Siswa sadar penuh dalam menganalisis materi {topik_pilihan}.
+- Meaningful Learning: Menghubungkan {topik_pilihan} dengan pengalaman nyata sehari-hari.
+- Joyful Learning    : Aktivitas menyenangkan melalui kuis atau diskusi kelompok.
+
+IV. ASESMEN / PENILAIAN
+------------------------------------------------------------
+- Skala 4 (Sangat Baik): Menguasai materi sepenuhnya & menunjukkan 8 profil lulusan.
+- Skala 3 (Baik)       : Menguasai materi dengan kaidah yang benar.
+- Skala 2 (Cukup)     : Memahami materi namun masih perlu bimbingan.
+- Skala 1 (Kurang)    : Belum mampu mencapai indikator pembelajaran.
 
 ------------------------------------------------------------
-Mengetahui,                                 Guru Kelas,
-Kepala Sekolah
+Mengetahui,                                 2026
+Kepala Sekolah                              Guru Kelas
 
 
 (____________________)                      ({nama_guru})
         """
         
-        st.success("Perangkat Pembelajaran Berhasil Disusun!")
-        st.text_area("Pratinjau Dokumen", modul_teks, height=500)
+        st.success("Modul Berhasil Dibuat!")
+        st.text_area("Pratinjau Dokumen", modul_result, height=500)
+        
+        st.download_button(
+            label="📥 Unduh Modul Ajar (.txt)",
+            data=modul_result,
+            file_name=f"Modul_{mapel}_{topik_pilihan}.txt",
+            mime="text/plain"
+        )
