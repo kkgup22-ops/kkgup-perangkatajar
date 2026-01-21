@@ -1,16 +1,20 @@
 import streamlit as st
 import google.generativeai as genai
 
-# --- CONFIGURASI UI ---
-st.set_page_config(page_title="Penyusun Perangkat SD", layout="wide", page_icon="🏫")
+# --- KONFIGURASI HALAMAN ---
+st.set_page_config(
+    page_title="Asisten Modul Ajar SD",
+    page_icon="🏫",
+    layout="wide"
+)
 
-# --- FUNGSI GENERATOR AI ---
-def generate_perangkat(api_key, data, topik):
+# --- FUNGSI AI ---
+def generate_perangkat_lengkap(api_key, data, topik):
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-pro')
     
     prompt = f"""
-    Bertindaklah sebagai Ahli Kurikulum Merdeka Kemdikbud. Buatkan perangkat pembelajaran lengkap.
+    Bertindaklah sebagai ahli kurikulum pendidikan dasar (SD). Buatkan perangkat pembelajaran lengkap.
     
     DATA ADMINISTRASI:
     Nama Guru: {data['nama']}
@@ -20,73 +24,85 @@ def generate_perangkat(api_key, data, topik):
     Mata Pelajaran: {data['mapel']}
     Topik: {topik}
 
-    TUGAS ANDA:
-    1. Buat MODUL AJAR dengan strategi Pembelajaran Mendalam (Deep Learning).
-    2. Integrasikan 8 Dimensi: Karakter, Kewarganegaraan, Kolaborasi, Komunikasi, Kreativitas, Berpikir Kritis, Empati (Compassion), dan Berpikir Komputasi.
-    3. Buat RUBRIK PENILAIAN yang mencakup kriteria: Perlu Bimbingan, Cukup, Baik, dan Sangat Baik untuk setiap dimensi tersebut.
+    ISI PERANGKAT:
+    1. MODUL AJAR: Gunakan pendekatan Deep Learning dengan integrasi 8 Dimensi Lulusan (Character, Citizenship, Collaboration, Communication, Creativity, Critical Thinking, Compassion, Computational Thinking).
+    2. LANGKAH PEMBELAJARAN: Buat aktivitas yang konkret untuk anak SD (Fase {data['fase']}).
+    3. RUBRIK PENILAIAN: Buat tabel penilaian autentik untuk aspek kognitif dan karakter (8 dimensi).
+    4. REKOMENDASI MEDIA: Sarankan alat peraga atau media digital (YouTube/Simulasi) yang relevan.
 
-    FORMAT OUTPUT:
-    --- BAGIAN 1: MODUL AJAR ---
-    (Tujuan, Langkah-langkah detail per dimensi, dan Penutup)
-    
-    --- BAGIAN 2: RUBRIK PENILAIAN ---
-    (Tabel rubrik penilaian autentik yang siap digunakan untuk mengamati siswa)
+    Gunakan format Markdown yang rapi dengan heading dan tabel.
     """
     
     response = model.generate_content(prompt)
     return response.text
 
-# --- TAMPILAN APLIKASI ---
-st.title("🛡️ Generator Perangkat Pembelajaran SD Lengkap")
-st.write("Sesuai Kurikulum Merdeka & Standar Pembelajaran Mendalam (Deep Learning)")
+# --- ANTARMUKA PENGGUNA (UI) ---
+st.title("🏫 Generator Perangkat Pembelajaran SD")
+st.markdown("Aplikasi berbasis AI untuk menyusun Modul Ajar **Deep Learning** dengan **8 Dimensi Lulusan**.")
 
-# Input Data Administrasi
-with st.expander("📝 1. Isi Data Administrasi (KOP Dokumen)", expanded=True):
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        nama_guru = st.text_input("Nama Guru & Gelar", placeholder="Contoh: Budi Santoso, S.Pd.")
-        nama_sekolah = st.text_input("Nama Sekolah", placeholder="Contoh: SDN 01 Merdeka")
-    with c2:
-        kelas_sd = st.selectbox("Kelas", ["1", "2", "3", "4", "5", "6"])
-        semester = st.radio("Semester", ["Ganjil", "Genap"], horizontal=True)
-    with c3:
-        tahun_ajaran = st.text_input("Tahun Ajaran", "2025/2026")
-        mapel = st.selectbox("Mata Pelajaran", ["Bahasa Indonesia", "Matematika", "IPAS", "Pendidikan Pancasila", "Seni Budaya", "PJOK"])
-
-# Input Materi
-with st.expander("💡 2. Isi Detail Materi", expanded=True):
-    topik_materi = st.text_area("Topik Pembelajaran", placeholder="Contoh: Mengenal Bagian Tubuh Tumbuhan dan Fungsinya")
-
-# Sidebar untuk API
+# Sidebar untuk API Key
 with st.sidebar:
-    st.header("🔑 Pengaturan AI")
-    api_key = st.text_input("Gemini API Key", type="password")
+    st.header("🔑 Pengaturan")
+    api_key = st.text_input("Gemini API Key", type="password", help="Dapatkan API Key gratis di Google AI Studio")
     st.divider()
-    st.caption("Aplikasi ini membantu Guru SD menghemat waktu administrasi sambil tetap menjaga kualitas pembelajaran yang mendalam (Deep Learning).")
+    st.info("Aplikasi ini membantu guru memenuhi administrasi Kurikulum Merdeka secara otomatis.")
+
+# Form Input Data Guru & Sekolah
+st.subheader("📋 Data Administrasi & Identitas")
+with st.container():
+    c1, c2 = st.columns(2)
+    with c1:
+        nama_guru = st.text_input("Nama Lengkap Guru", placeholder="Contoh: Siti Aminah, S.Pd.")
+        nama_sekolah = st.text_input("Nama Sekolah", placeholder="Contoh: SDN 05 Pagi Jakarta")
+        tahun_ajaran = st.text_input("Tahun Ajaran", value="2025/2026")
+    with c2:
+        mapel = st.selectbox("Mata Pelajaran", ["Bahasa Indonesia", "Matematika", "IPAS", "Pancasila", "Seni Budaya", "PJOK"])
+        col_k, col_s = st.columns(2)
+        with col_k:
+            kelas = st.selectbox("Kelas", ["1", "2", "3", "4", "5", "6"])
+        with col_s:
+            semester = st.radio("Semester", ["1 (Ganjil)", "2 (Genap)"], horizontal=True)
+
+# Input Topik Pembelajaran
+st.subheader("💡 Materi Pembelajaran")
+topik_materi = st.text_area("Masukkan Topik atau Tujuan Pembelajaran (TP)", 
+                            placeholder="Contoh: Mengetahui proses siklus air dan dampaknya bagi makhluk hidup.")
+
+# Penentuan Fase Otomatis
+fase_map = {"1": "A", "2": "A", "3": "B", "4": "B", "5": "C", "6": "C"}
+fase_terpilih = fase_map[kelas]
 
 # Tombol Eksekusi
-if st.button("✨ Buat Modul Ajar & Rubrik Penilaian"):
-    if not api_key or not nama_guru or not topik_materi:
-        st.error("Lengkapi Data Guru, Topik, dan API Key untuk melanjutkan.")
+if st.button("🚀 Buat Perangkat Pembelajaran Lengkap"):
+    if not api_key:
+        st.error("Silakan masukkan API Key di sidebar!")
+    elif not nama_guru or not topik_materi:
+        st.warning("Mohon lengkapi Nama Guru dan Topik Materi.")
     else:
-        with st.spinner("Sedang memproses 8 dimensi lulusan..."):
+        with st.spinner("AI sedang merancang pembelajaran mendalam..."):
             try:
-                data_final = {
-                    "nama": nama_guru, "sekolah": nama_sekolah, "kelas": kelas_sd,
-                    "semester": semester, "tahun": tahun_ajaran, "mapel": mapel
+                data_guru = {
+                    "nama": nama_guru, "sekolah": nama_sekolah, "tahun": tahun_ajaran,
+                    "mapel": mapel, "kelas": kelas, "semester": semester, "fase": fase_terpilih
                 }
-                hasil = generate_perangkat(api_key, data_final, topik_materi)
                 
-                st.success("Berhasil! Silakan periksa draf di bawah ini.")
-                st.markdown("---")
+                hasil = generate_perangkat_lengkap(api_key, data_guru, topik_materi)
+                
+                st.success("Perangkat Pembelajaran Berhasil Disusun!")
+                st.divider()
+                
+                # Menampilkan Hasil
                 st.markdown(hasil)
                 
-                # Fitur Download
+                # Tombol Download
                 st.download_button(
-                    label="📥 Unduh Perangkat Pembelajaran (Format .txt)",
+                    label="📥 Unduh Hasil (Format .txt)",
                     data=hasil,
-                    file_name=f"Perangkat_SD_{mapel}_Kelas{kelas_sd}.txt",
+                    file_name=f"Modul_Ajar_{mapel}_Kelas{kelas}.txt",
                     mime="text/plain"
                 )
             except Exception as e:
-                st.error(f"Error: {e}")
+                st.error(f"Terjadi kesalahan teknis: {e}")
+
+st.divider()
+st.caption("Dikembangkan untuk mendukung transformasi pendidikan guru SD Indonesia.")
