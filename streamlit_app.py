@@ -1,5 +1,5 @@
 import streamlit as st
-import google.generativeai as genai
+
 
 # --- KONFIGURASI HALAMAN ---
 st.set_page_config(
